@@ -1,13 +1,14 @@
 import clsx from "clsx";
 import { redirect } from "next/navigation";
 import { ComponentProps, ReactNode } from "react";
-import { auth, signIn } from "@/auth";
+import { signIn } from "next-auth/react"; // changed to use next-auth for sign-in
 import { DASHBOARD_URL } from "@/constants";
 import { SignInIcon } from "@/icons";
 import { MarketingLayout } from "@/layouts/Marketing";
 import { Button, LinkButton } from "@/primitives/Button";
 import { Container } from "@/primitives/Container";
 import styles from "./page.module.css";
+import { auth } from "@/lib/auth"; // import the auth function
 
 interface FeatureProps extends Omit<ComponentProps<"div">, "title"> {
   description: ReactNode;
@@ -24,7 +25,7 @@ function Feature({ title, description, className, ...props }: FeatureProps) {
 }
 
 export default async function Index() {
-  const session = await auth();
+  const session = await auth(); // check if the user is authenticated
 
   // If logged in, go to dashboard
   if (session) {
@@ -47,10 +48,10 @@ export default async function Index() {
           <form
             action={async () => {
               "use server";
-              await signIn();
+              await signIn("github"); // sign in with GitHub
             }}
           >
-            <Button icon={<SignInIcon />}>Sign in</Button>
+            <Button icon={<SignInIcon />}>Sign in with GitHub</Button>
           </form>
           <LinkButton
             href="https://liveblocks.io/docs/guides/nextjs-starter-kit"
